@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean   // 라이브러리에서 들고온 컴포넌트 IoC등록
+    @Bean   // 라이브러리에서 들고온 컴포넌트 IoC등록(passwordEncoder이름으로 저장됨)
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); //
     }
