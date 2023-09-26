@@ -1,5 +1,6 @@
 package com.toyproject.instagram.controller;
 
+import com.toyproject.instagram.dto.SigninReqDto;
 import com.toyproject.instagram.dto.SignupReqDto;
 import com.toyproject.instagram.exception.SignupException;
 import com.toyproject.instagram.service.UserService;
@@ -37,5 +38,13 @@ public class AuthenticationController {
 
         userService.signupUser(signupReqDto);
         return  ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> signin(@RequestBody SigninReqDto signinReqDto) {
+
+        userService.signinUser(signinReqDto);
+
+        return ResponseEntity.ok(null);
     }
 }

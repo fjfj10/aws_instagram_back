@@ -12,7 +12,7 @@ public class SignupReqDto {
 //    @NotBlank(message = "전화번호 또는 이메일은 공백일 수 없습니다.")
     // regexp = "정규식 \\은 \를 의미: 이스케이프문자가 문자열안에 있기때문에, |=or, \\d = [0-9]"
     @Pattern(regexp = "^[a-zA-Z0-9]+@[0-9a-zA-Z]+\\.[a-z]*$|^[0-9]{11}+$", message = "이메일 또는 전화번호를 입력하세요.")
-    private String phoneAndEmail;
+    private String phoneOrEmail;
 
 //    @NotBlank(message = "이름은 공백일 수 없습니다.")
     @Pattern(regexp = "^[가-힣]{2,6}$", message = "한글만 입력할 수 있습니다.")
@@ -26,7 +26,7 @@ public class SignupReqDto {
 
     public User toUserEntity(BCryptPasswordEncoder passwordEncoder) {
         return User.builder()
-                .email(phoneAndEmail)
+                .email(phoneOrEmail)
                 .name(name)
                 .username(username)
                 .password(passwordEncoder.encode(password)) // password 암호화
