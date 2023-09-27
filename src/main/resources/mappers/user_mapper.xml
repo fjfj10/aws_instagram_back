@@ -3,6 +3,26 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.toyproject.instagram.repository.UserMapper">
+    <resultMap id="userMap" type="com.toyproject.instagram.entity.User">
+        <id property="userId" column="user_id" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+        <result property="name" column="name" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="provider" column="provider" />
+        <collection property="authorities" javaType="list" resultMap="authorityMap" />
+    </resultMap>
+    <resultMap id="authorityMap" type="com.toyproject.instagram.entity.Authority">
+        <id property="authorityId" column="authority_id" />
+        <result property="userId" column="user_id" />
+        <result property="roleId" column="role_id" />
+        <association property="role" resultMap="roleMap" />
+    </resultMap>
+    <resultMap id="roleMap" type="com.toyproject.instagram.entity.Role">
+        <id property="roleId" column="role_id" />
+        <result property="roleName" column="role_name" />
+    </resultMap>
 
     <insert id="saveUser" parameterType="com.toyproject.instagram.entity.User">
         insert into user_tb
@@ -11,53 +31,68 @@
 
     <select id="findUserByPhone"
             parameterType="string"
-            resultType="com.toyproject.instagram.entity.User">
+            resultMap="userMap">
         select
-            user_id,
-            email,
-            phone,
-            name,
-            username,
-            password,
-            provider
+            ut.user_id,
+            ut.email,
+            ut.phone,
+            ut.name,
+            ut.username,
+            ut.password,
+            ut.provider,
+            at.authority_id,
+            rt.role_id,
+            rt.role_name
         from
-            user_tb
+            user_tb ut
+            left outer join authority_tb at on(at.user_id = ut.user_id)
+            left outer join role_tb rt on(rt.role_id = at.role_id)
         where
-            phone = #{phoneOrEmailOrUsername}
+            ut.phone = #{phoneOrEmailOrUsername}
     </select>
 
     <select id="findUserByEmail"
             parameterType="string"
-            resultType="com.toyproject.instagram.entity.User">
+            resultMap="userMap">
         select
-            user_id,
-            email,
-            phone,
-            name,
-            username,
-            password,
-            provider
+            ut.user_id,
+            ut.email,
+            ut.phone,
+            ut.name,
+            ut.username,
+            ut.password,
+            ut.provider,
+            at.authority_id,
+            rt.role_id,
+            rt.role_name
         from
-            user_tb
+            user_tb ut
+            left outer join authority_tb at on(at.user_id = ut.user_id)
+            left outer join role_tb rt on(rt.role_id = at.role_id)
         where
-            email = #{phoneOrEmailOrUsername}
+            ut.email = #{phoneOrEmailOrUsername}
     </select>
 
     <select id="findUserByUsername"
             parameterType="string"
-            resultType="com.toyproject.instagram.entity.User">
+            resultMap="userMap">
         select
-            user_id,
-            email,
-            phone,
-            name,
-            username,
-            password,
-            provider
+            ut.user_id,
+            ut.email,
+            ut.phone,
+            ut.name,
+            ut.username,
+            ut.password,
+            ut.provider,
+            at.authority_id,
+            rt.role_id,
+            rt.role_name
         from
-            user_tb
+            user_tb ut
+            left outer join authority_tb at on(at.user_id = ut.user_id)
+            left outer join role_tb rt on(rt.role_id = at.role_id)
         where
-            username = #{phoneOrEmailOrUsername}
+            ut.username = #{phoneOrEmailOrUsername}
     </select>
 
 </mapper>
