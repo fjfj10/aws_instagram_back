@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -46,4 +47,27 @@ public class JwtTokenProvider {
 
         return accessToken;
     }
+
+    // 토큰 유효성 검사
+    public Boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+        }catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public String convertToken(String bearerToken) {
+        String type = "Bearer ";
+        //StringUtils : null 확인, 공백 확인을 동시에 해줌
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(type)) {
+            return bearerToken.substring(type.length());
+        }
+        return "";
+    }
+
 }

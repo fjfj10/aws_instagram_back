@@ -7,10 +7,7 @@ import com.toyproject.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -44,7 +41,13 @@ public class AuthenticationController {
     public ResponseEntity<?> signin(@RequestBody SigninReqDto signinReqDto) {
 
         String accessToken = userService.signinUser(signinReqDto);
-        // 정상적으로 로그인이 되면 200으로 accessToken
+        // 정상적으로 로그인이 되면 200으로 accessToken을 넘겨줌
         return ResponseEntity.ok().body(accessToken);
     }
+
+    @GetMapping("/authenticate")
+    public ResponseEntity<?> authenticate(@RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok(userService.authenticate(token));
+    }
+
 }
