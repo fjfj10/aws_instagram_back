@@ -30,14 +30,14 @@ public class AuthenticateExceptionEntryPoint implements AuthenticationEntryPoint
         JsonMapper jsonMapper = new JsonMapper();
         // jackson라이브러리의 Map을 JSON문자열로 변환
         String responseJson = jsonMapper.writeValueAsString(errorMap);
-
+        // HttpServletResponse를 사용하여 response에 Json으로 오류 메세지 전달(Network의 Response)
         response.getWriter().println(responseJson);
     }
 
     private String getErrorMessage(AuthenticationException authException) {
-        if (authException.getClass() == BadCredentialsException.class) {
+        if (authException.getClass() == BadCredentialsException.class) {    // 비밀번호 불일치
             return "잘못된 사용자 정보입니다. 다시확인하세요.";
-        } else if (authException.getClass() == UsernameNotFoundException.class) {
+        } else if (authException.getClass() == UsernameNotFoundException.class) {   // 계정없음
             return "잘못된 사용자 정보입니다. 다시확인하세요.";
         } else if (authException.getClass() == AccountExpiredException.class) {
             return "만료된 사용자 정보입니다. 다시확인하세요.";

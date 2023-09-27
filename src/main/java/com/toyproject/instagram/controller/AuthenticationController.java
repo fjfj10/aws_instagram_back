@@ -43,8 +43,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> signin(@RequestBody SigninReqDto signinReqDto) {
 
-        userService.signinUser(signinReqDto);
-
-        return ResponseEntity.ok(null);
+        String accessToken = userService.signinUser(signinReqDto);
+        // 정상적으로 로그인이 되면 200으로 accessToken
+        return ResponseEntity.ok().body(accessToken);
     }
 }

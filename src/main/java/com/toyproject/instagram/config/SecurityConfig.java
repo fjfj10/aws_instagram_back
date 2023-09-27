@@ -18,7 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean   // 라이브러리에서 들고온 컴포넌트 IoC등록(passwordEncoder이름으로 저장됨)
     public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); //
+        return new BCryptPasswordEncoder();
     }
 
     @Override
