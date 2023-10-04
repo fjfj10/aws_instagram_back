@@ -21,17 +21,17 @@ public class PrincipalDetailsService implements UserDetailsService {
 
         User user = userMapper.findUserByPhone(phoneOrEmailOrUsername);
         if(user != null) {
-            return new PrincipalUser(user.getPhone(), user.getPassword());
+            return new PrincipalUser(user.getPhone(), user.getPassword(), user.getAuthorities());
         }
 
         user = userMapper.findUserByEmail(phoneOrEmailOrUsername);
         if (user != null) {
-            return new PrincipalUser(user.getEmail(), user.getPassword());
+            return new PrincipalUser(user.getEmail(), user.getPassword(),user.getAuthorities());
         }
 
         user = userMapper.findUserByUsername(phoneOrEmailOrUsername);
         if (user != null) {
-            return new PrincipalUser(user.getUsername(), user.getPassword());
+            return new PrincipalUser(user.getUsername(), user.getPassword(), user.getAuthorities());
         }
 
         throw new UsernameNotFoundException("잘못된 사용자 정보입니다. 다시 확인하세요.");

@@ -4,6 +4,7 @@ import com.toyproject.instagram.dto.SigninReqDto;
 import com.toyproject.instagram.dto.SignupReqDto;
 import com.toyproject.instagram.entity.User;
 import com.toyproject.instagram.exception.JwtException;
+import com.toyproject.instagram.exception.SignupException;
 import com.toyproject.instagram.repository.UserMapper;
 import com.toyproject.instagram.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,13 +33,12 @@ public class UserService {
         User user = signupReqDto.toUserEntity(passwordEncoder);
 
         // 입력된 정보의 email과 phone 타입을 구분하여 DB에 저장
-        String emailPattern = "^[a-zA-Z0-9]+@[0-9a-zA-Z]+\\.[a-z]*$";
         String phonePattern = "^[0-9]{11}+$";
 
-        Pattern emailRegex = Pattern.compile(emailPattern);
         Pattern phoneRegex = Pattern.compile(phonePattern);
 
-        Matcher emailMatcher = emailRegex.matcher(signupReqDto.getPhoneOrEmail());
+        // Pattern -> Regex -> Matcher로 하지않고 한번에 적을 수 있다
+        Matcher emailMatcher = Pattern.compile("^[a-zA-Z0-9]+@[0-9a-zA-Z]+\\.[a-z]*$").matcher(signupReqDto.getPhoneOrEmail());
         Matcher phoneMatcher = phoneRegex.matcher(signupReqDto.getPhoneOrEmail());
 
         if (emailMatcher.matches()) {
@@ -45,7 +48,35 @@ public class UserService {
             user.setPhone(signupReqDto.getPhoneOrEmail());
         }
 
+        checkDuplicated(user);
+//        userMapper.saveUser(user);
+
         Integer executeCount = userMapper.saveUser(user);
+    }
+
+    private void checkDuplicated(User user) {
+        // hasText = null, 공백체크를 자동으로 해줌
+        if (StringUtils.hasText(user.getPhone())) {
+            if(userMapper.findUserByPhone(user.getPhone()) != null) {
+                Map<String, String> errorMap = new HashMap<>();
+                errorMap.put("phone", "이미 사용중인 연락처입니다.");
+                throw new SignupException(errorMap);
+            }
+        }
+        if (StringUtils.hasText(user.getEmail())) {
+            if(userMapper.findUserByEmail(user.getEmail()) != null) {
+                Map<String, String> errorMap = new HashMap<>();
+                errorMap.put("email", "이미 사용중인 이메일입니다.");
+                throw new SignupException(errorMap);
+            }
+        }
+        if (StringUtils.hasText(user.getUsername())) {
+            if(userMapper.findUserByUsername(user.getUsername()) != null) {
+                Map<String, String> errorMap = new HashMap<>();
+                errorMap.put("username", "이미 사용중인 사용자이름입니다.");
+                throw new SignupException(errorMap);
+            }
+        }
     }
 
     public String signinUser(SigninReqDto signinReqDto) {
