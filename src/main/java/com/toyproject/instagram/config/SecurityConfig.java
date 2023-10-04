@@ -1,6 +1,7 @@
 package com.toyproject.instagram.config;
 
 import com.toyproject.instagram.exception.AuthenticateExceptionEntryPoint;
+import com.toyproject.instagram.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity  // 현재 우리가 만든 Security 설정 정책을 따른다
 @Configuration
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticateExceptionEntryPoint authenticateExceptionEntryPoint;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean   // 라이브러리에서 들고온 컴포넌트 IoC등록(passwordEncoder이름으로 저장됨)
     public BCryptPasswordEncoder passwordEncoder() {
@@ -32,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()   // 나머지 모든 요청은
                 .authenticated()    // 인증을 받아라
                 .and()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)   // UsernamePasswordAuthenticationFilter전에 jwtAuthenticationFilter를 거쳐라
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticateExceptionEntryPoint); // 인증절차 중 예외가 생기면 바로 authenticateExceptionEntryPoint에서 처리
 
