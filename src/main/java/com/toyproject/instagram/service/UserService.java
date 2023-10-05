@@ -49,9 +49,9 @@ public class UserService {
         }
 
         checkDuplicated(user);
-//        userMapper.saveUser(user);
+        userMapper.saveUser(user);
 
-        Integer executeCount = userMapper.saveUser(user);
+//        Integer executeCount = userMapper.saveUser(user);
     }
 
     private void checkDuplicated(User user) {
