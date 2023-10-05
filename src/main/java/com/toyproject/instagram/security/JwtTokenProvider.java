@@ -68,7 +68,7 @@ public class JwtTokenProvider {
             return jwtBuilder.claim("username", user.getUsername()).compact();
         }
 
-        return jwtBuilder.claim("username", user.getUsername()).compact();
+        return jwtBuilder.claim("username", principalUser.getUsername()).compact();
     }
 
     // 토큰 유효성 검사
