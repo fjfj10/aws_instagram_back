@@ -17,7 +17,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String phoneOrEmailOrUsername) throws UsernameNotFoundException {
-        System.out.println("아이디넘어옴?" + phoneOrEmailOrUsername);
+        System.out.println("아이디" + phoneOrEmailOrUsername);
 
         User user = userMapper.findUserByPhone(phoneOrEmailOrUsername);
         if(user != null) {
